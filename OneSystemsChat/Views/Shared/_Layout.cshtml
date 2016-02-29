@@ -1,0 +1,49 @@
+﻿@using System.Activities.Statements
+@using System.Web.Optimization
+@using OneSystemsChat.Helpers
+
+@{
+    var user = SessionHelper.CurrentUser();    
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    
+    @Scripts.Render("~/bundles/Content/Scripts/modernizr")
+    @Scripts.Render("~/bundles/Content/Scripts/jquery")
+    @Scripts.Render("~/bundles/Content/Scripts/ko")
+    @Scripts.Render("~/bundles/Content/Scripts/moment")
+    @Scripts.Render("~/bundles/Content/Scripts/signalr")
+    @Scripts.Render("~/bundles/Content/Scripts/global")
+    
+    @Styles.Render("~/bindles/styles/bootstrap");
+    @Styles.Render("~/bindles/styles/site");
+</head>
+<body>
+    <header>
+        <div class="row">
+            <div class="col-md-7 col-md-offset-2"><h1>OneSystems chat</h1></div>
+            
+            @if(user != null)
+            {
+                <div class="col-md-3"><a href="@Url.Action("LogOut", "User")">Sign Out</a></div>    
+            }
+            
+        </div>
+        
+    </header>
+
+    <div class="container">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - OneSystems chat</p>
+        </footer>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,82 @@
+﻿@using System.Web.Optimization
+@model OneSystemsChat.Models.Chat.ChatViewModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<script src="/signalr/hubs"></script>
+
+<div id="chatContainer" class="container">
+    
+    <div class="row">
+        <div class="col-md-3 col-md-offset-9"><strong>Hello, <span data-bind="text: $root.CurrentUserLogin()"></span></strong></div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3 custom-overflow">
+            <h2>Active Users</h2>
+
+            <div data-bind="if: ActiveUsers().length == 0">
+                <div class="alert alert-warning" role="alert">There are no active users yet. <b>:(</b></div>
+            </div>
+
+            <ul data-bind="foreach: ActiveUsers" class="nav nav-pills nav-stacked">
+                <li>
+                    <a href="#" data-bind="click: $root.GetUserMessages">
+                        <span data-bind="text: Login"></span>
+                    </a>
+                    <span data-bind="if: HasMessage == true, click: $root.GetUserMessages" class="label label-success custom-clickable">new message</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="col-md-9">
+            
+            <div class="row">
+                <div class="col-md-8">
+                    <h2 data-bind="text: $root.GetChatHeaderText()"></h2>
+                </div>
+                <div class="col-md-4">
+                    <div data-bind="if: $root.RecipientId() > 0">
+                        <h2><a href="#" data-bind="click: $root.GetPublicMessages()">Public chat</a></h2>
+                    </div>  
+                </div>
+            </div>
+
+            <div data-bind="foreach: Messages" class="row custom-overflow">
+                <div class="row">
+                    <div class="col-md-10 col-md-offset-1">
+                        <div class="alert alert-info">
+                            <b data-bind="text: $root.GetDateFormatted($data)"></b>,
+                            <b data-bind="text: Login"></b>:
+                            <span data-bind="text: Content"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr/>
+    <form>
+        <div class="form-horizontal col-md-offset-4">
+            <div class="form-group">
+                <div class="col-md-10">
+                    <textarea data-bind="value: Content" class="form-control"></textarea>
+                </div>
+                <div class="col-md-2">
+                    <button data-bind="click: SendMessage, enable: Content" class="btn btn-primary">Send</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@Scripts.Render("~/bundles/Content/Scripts/app/chat")
+
+<script>
+    $(function () {
+        viewModels.chat = new ChatModel(@Html.Raw(Json.Encode(Model)));
+        ko.applyBindings(viewModels.chat, document.getElementById('chatContainer'));
+    });
+</script>

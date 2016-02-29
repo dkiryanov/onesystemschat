@@ -1,0 +1,13 @@
+﻿.validationMessage {
+    font-weight: bold;
+    color: red;
+}
+
+.custom-overflow {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.custom-clickable {
+    cursor: pointer;
+}

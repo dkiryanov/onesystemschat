@@ -1,0 +1,175 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="ChatEDM.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="ChatEDMStoreContainer">
+    <EntitySet Name="UserSet" EntityType="ChatEDM.Store.UserSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="MessageSet" EntityType="ChatEDM.Store.MessageSet" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="UserMessage" Association="ChatEDM.Store.UserMessage">
+      <End Role="User" EntitySet="UserSet" />
+      <End Role="Message" EntitySet="MessageSet" />
+    </AssociationSet>
+    <AssociationSet Name="UserMessage1" Association="ChatEDM.Store.UserMessage1">
+      <End Role="User" EntitySet="UserSet" />
+      <End Role="Message" EntitySet="MessageSet" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="UserSet">
+    <Key>
+      <PropertyRef Name="UserId" />
+    </Key>
+    <Property Name="UserId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Password" Type="nvarchar" Nullable="false" MaxLength="256" />
+    <Property Name="Login" Type="nvarchar" Nullable="false" MaxLength="128" />
+  </EntityType>
+  <EntityType Name="MessageSet">
+    <Key>
+      <PropertyRef Name="MessageId" />
+    </Key>
+    <Property Name="MessageId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Date" Type="datetime" Nullable="false" />
+    <Property Name="Content" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="UserId" Type="int" Nullable="false" />
+    <Property Name="RecipientId" Type="int" Nullable="true" />
+    <Property Name="User_UserId" Type="int" Nullable="false" />
+    <Property Name="Recipient_UserId" Type="int" Nullable="true" />
+  </EntityType>
+  <Association Name="UserMessage">
+    <End Role="User" Type="ChatEDM.Store.UserSet" Multiplicity="1" />
+    <End Role="Message" Type="ChatEDM.Store.MessageSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="Message">
+        <PropertyRef Name="User_UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="UserMessage1">
+    <End Role="User" Type="ChatEDM.Store.UserSet" Multiplicity="0..1" />
+    <End Role="Message" Type="ChatEDM.Store.MessageSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="Message">
+        <PropertyRef Name="Recipient_UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="ChatEDM" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
+        <EntityContainer Name="ChatEDMContainer" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="UserSet" EntityType="ChatEDM.User" />
+          <EntitySet Name="MessageSet" EntityType="ChatEDM.Message" />
+          <AssociationSet Name="UserMessage" Association="ChatEDM.UserMessage">
+            <End Role="User" EntitySet="UserSet" />
+            <End Role="Message" EntitySet="MessageSet" />
+          </AssociationSet>
+          <AssociationSet Name="UserMessage1" Association="ChatEDM.UserMessage1">
+            <End Role="User" EntitySet="UserSet" />
+            <End Role="Message" EntitySet="MessageSet" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Password" Type="String" Nullable="false" MaxLength="256" />
+          <Property Name="Login" Type="String" Nullable="false" MaxLength="128" />
+          <NavigationProperty Name="Messages" Relationship="ChatEDM.UserMessage" FromRole="User" ToRole="Message" />
+          <NavigationProperty Name="IncomingMessages" Relationship="ChatEDM.UserMessage1" FromRole="User" ToRole="Message" />
+        </EntityType>
+        <EntityType Name="Message">
+          <Key>
+            <PropertyRef Name="MessageId" />
+          </Key>
+          <Property Name="MessageId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Date" Type="DateTime" Nullable="false" />
+          <Property Name="Content" Type="String" Nullable="false" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="RecipientId" Type="Int32" Nullable="true" />
+          <NavigationProperty Name="User" Relationship="ChatEDM.UserMessage" FromRole="Message" ToRole="User" />
+          <NavigationProperty Name="Recipient" Relationship="ChatEDM.UserMessage1" FromRole="Message" ToRole="User" />
+        </EntityType>
+        <Association Name="UserMessage">
+          <End Type="ChatEDM.User" Role="User" Multiplicity="1" />
+          <End Type="ChatEDM.Message" Role="Message" Multiplicity="*" />
+        </Association>
+        <Association Name="UserMessage1">
+          <End Type="ChatEDM.User" Role="User" Multiplicity="0..1" />
+          <End Type="ChatEDM.Message" Role="Message" Multiplicity="*" />
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="ChatEDMStoreContainer" CdmEntityContainer="ChatEDMContainer">
+    <EntitySetMapping Name="UserSet">
+      <EntityTypeMapping TypeName="IsTypeOf(ChatEDM.User)">
+        <MappingFragment StoreEntitySet="UserSet">
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="Password" ColumnName="Password" />
+          <ScalarProperty Name="Login" ColumnName="Login" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MessageSet">
+      <EntityTypeMapping TypeName="IsTypeOf(ChatEDM.Message)">
+        <MappingFragment StoreEntitySet="MessageSet">
+          <ScalarProperty Name="MessageId" ColumnName="MessageId" />
+          <ScalarProperty Name="Date" ColumnName="Date" />
+          <ScalarProperty Name="Content" ColumnName="Content" />
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="RecipientId" ColumnName="RecipientId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <AssociationSetMapping Name="UserMessage" TypeName="ChatEDM.UserMessage" StoreEntitySet="MessageSet">
+      <EndProperty Name="User">
+        <ScalarProperty Name="UserId" ColumnName="User_UserId" />
+      </EndProperty>
+      <EndProperty Name="Message">
+        <ScalarProperty Name="MessageId" ColumnName="MessageId" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="UserMessage1" TypeName="ChatEDM.UserMessage1" StoreEntitySet="MessageSet">
+      <EndProperty Name="User">
+        <ScalarProperty Name="UserId" ColumnName="Recipient_UserId" />
+      </EndProperty>
+      <EndProperty Name="Message">
+        <ScalarProperty Name="MessageId" ColumnName="MessageId" />
+      </EndProperty>
+      <Condition ColumnName="Recipient_UserId" IsNull="false" />
+    </AssociationSetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <edmx:Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </edmx:Connection>
+    <edmx:Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
+      </DesignerInfoPropertySet>
+    </edmx:Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
